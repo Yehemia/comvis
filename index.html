@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Visit — Salatiga → Jakarta & Tangerang</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root {
+    --bg: #060A10;
+    --surface: #0D1420;
+    --surface2: #111927;
+    --border: rgba(255,255,255,0.07);
+    --accent1: #00D4FF;
+    --accent2: #FF3CAC;
+    --accent3: #F7B731;
+    --accent4: #00F5A0;
+    --accent5: #FF6B35;
+    --text: #E8EDF5;
+    --muted: #6B7A94;
+    --glow1: rgba(0,212,255,0.15);
+    --glow2: rgba(255,60,172,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Orb blobs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+    animation: orb-drift 20s ease-in-out infinite alternate;
+  }
+  .orb-1 { width: 600px; height: 600px; background: var(--glow1); top: -200px; left: -100px; }
+  .orb-2 { width: 500px; height: 500px; background: var(--glow2); bottom: 200px; right: -100px; animation-delay: -10s; }
+
+  @keyframes orb-drift {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(40px, 60px) scale(1.1); }
+  }
+
+  main { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 0 60px;
+    position: relative;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent1);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 32px;
+    height: 1px;
+    background: var(--accent1);
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(42px, 7vw, 88px);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .hero h1 span { color: var(--accent1); }
+  .hero-sub {
+    font-size: clamp(14px, 2vw, 17px);
+    color: var(--muted);
+    max-width: 580px;
+    line-height: 1.7;
+    margin-top: 20px;
+    font-weight: 300;
+  }
+  .hero-route {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 32px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.05em;
+  }
+  .route-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent4);
+    box-shadow: 0 0 12px var(--accent4);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .route-line {
+    flex: 1; max-width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent4), transparent);
+  }
+  .route-city { color: var(--muted); font-size: 13px; }
+
+  /* ── KPI STRIP ── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 64px;
+  }
+  .kpi-card {
+    background: var(--surface);
+    padding: 36px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .kpi-card:hover { background: var(--surface2); }
+  .kpi-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .kpi-card:nth-child(1)::after { background: var(--accent1); }
+  .kpi-card:nth-child(2)::after { background: var(--accent4); }
+  .kpi-card:nth-child(3)::after { background: var(--accent2); }
+
+  .kpi-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-bottom: 6px;
+  }
+  .kpi-card:nth-child(1) .kpi-num { color: var(--accent1); }
+  .kpi-card:nth-child(2) .kpi-num { color: var(--accent4); }
+  .kpi-card:nth-child(3) .kpi-num { color: var(--accent2); }
+
+  .kpi-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .kpi-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+    font-weight: 300;
+  }
+  .kpi-ghost-num {
+    position: absolute;
+    right: 16px; bottom: -10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 100px;
+    font-weight: 900;
+    opacity: 0.04;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-head {
+    margin-bottom: 32px;
+  }
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-tag::before {
+    content: '//';
+    color: var(--accent1);
+    font-weight: 500;
+  }
+  .section-head h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(24px, 4vw, 38px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .section-head p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+    margin-top: 10px;
+    max-width: 600px;
+    font-weight: 300;
+  }
+
+  /* ── CHARTS ── */
+  .chart-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px;
+    margin-bottom: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .chart-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent1), transparent);
+  }
+  .chart-wrap { position: relative; width: 100%; height: 380px; }
+
+  .insight-pill {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: rgba(0,212,255,0.06);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 24px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #9BBDD0;
+  }
+  .insight-pill strong { color: var(--accent1); }
+  .insight-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── GEO SPLIT ── */
+  .geo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+  @media (max-width: 680px) { .geo-grid { grid-template-columns: 1fr; } }
+
+  .geo-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+  }
+  .geo-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: border-color 0.2s, background 0.2s;
+    cursor: default;
+  }
+  .geo-item:hover {
+    background: var(--surface2);
+    border-color: rgba(255,255,255,0.12);
+  }
+  .geo-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .geo-item-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .geo-item-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .geo-bar-wrap {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .geo-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 1.5s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  /* ── ROUTE CARDS ── */
+  .routes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 80px;
+  }
+  .route-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    cursor: default;
+  }
+  .route-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+  }
+  .route-card.featured {
+    border-color: var(--accent3);
+    box-shadow: 0 0 0 1px rgba(247,183,49,0.2), inset 0 0 60px rgba(247,183,49,0.03);
+  }
+  .route-card.featured:hover { box-shadow: 0 24px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(247,183,49,0.4); }
+
+  .route-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .route-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 6px;
+  }
+  .route-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 17px;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+  .route-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    background: rgba(247,183,49,0.12);
+    color: var(--accent3);
+    border: 1px solid rgba(247,183,49,0.25);
+    border-radius: 99px;
+    padding: 4px 10px;
+    margin-bottom: 14px;
+  }
+  .route-day {
+    margin-bottom: 10px;
+  }
+  .day-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .day-stops {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .stop-chip {
+    font-size: 12px;
+    font-weight: 500;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .stop-arrow {
+    color: var(--muted);
+    font-size: 10px;
+  }
+  .route-note {
+    font-size: 11px;
+    color: var(--accent3);
+    margin-top: 12px;
+    font-style: italic;
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  /* accent colors per card */
+  .c1::before { background: #00D4FF; }
+  .c2::before { background: #00F5A0; }
+  .c3::before { background: #FF6B35; }
+  .c4::before { background: #FF3CAC; }
+  .c5::before { background: #F7B731; }
+  .c6::before { background: #A78BFA; }
+  .c7::before { background: #34D399; }
+  .c8::before { background: #F472B6; }
+  .c9::before { background: #60A5FA; }
+  .c10::before { background: #FBBF24; }
+
+  .c1 .route-num { color: #00D4FF; }
+  .c2 .route-num { color: #00F5A0; }
+  .c3 .route-num { color: #FF6B35; }
+  .c4 .route-num { color: #FF3CAC; }
+  .c5 .route-num { color: #F7B731; }
+  .c6 .route-num { color: #A78BFA; }
+  .c7 .route-num { color: #34D399; }
+  .c8 .route-num { color: #F472B6; }
+  .c9 .route-num { color: #60A5FA; }
+  .c10 .route-num { color: #FBBF24; }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 40px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: var(--muted);
+  }
+  .footer-logo span { color: var(--accent1); }
+  .footer-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 600px) {
+    .kpi-strip { grid-template-columns: 1fr; }
+    .kpi-num { font-size: 48px; }
+  }
+</style>
+</head>
+<body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <main>
+    <!-- HERO -->
+    <div class="hero fade-in">
+      <div class="hero-eyebrow">Company Visit 2025 — Master Plan</div>
+      <h1>Master<br><span>Plan</span> <br>Kunjungan</h1>
+      <div class="hero-route">
+        <div class="route-dot"></div>
+        <span style="font-size:13px;color:var(--accent4)">SALATIGA</span>
+        <div class="route-line"></div>
+        <span class="route-city">JAKARTA</span>
+        <div style="width:30px;height:1px;background:var(--muted);opacity:0.3"></div>
+        <span class="route-city">TANGERANG</span>
+      </div>
+      <p class="hero-sub">Analisis komprehensif 10 rute strategis kunjungan industri — mengoptimalkan efisiensi waktu, jarak, dan relevansi industri untuk 60–90 peserta.</p>
+    </div>
+
+    <!-- KPI STRIP -->
+    <div class="kpi-strip fade-in">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Opsi Rute</div>
+        <div class="kpi-num">10</div>
+        <div class="kpi-desc">Jalur strategis disesuaikan dengan fokus studi spesifik</div>
+        <div class="kpi-ghost-num">10</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Destinasi Perusahaan</div>
+        <div class="kpi-num">13</div>
+        <div class="kpi-desc">Unicorn, BUMN, Multinasional & Tech Giants</div>
+        <div class="kpi-ghost-num">13</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Kawasan Bisnis</div>
+        <div class="kpi-num">5</div>
+        <div class="kpi-desc">Tangerang · SCBD · Sudirman · Thamrin · Slipi</div>
+        <div class="kpi-ghost-num">5</div>
+      </div>
+    </div>
+
+    <!-- CHART: COMPANY FREQUENCY -->
+    <section class="fade-in">
+      <div class="section-head">
+        <div class="section-tag">01 — Analisis Destinasi</div>
+        <h2>Frekuensi<br>Destinasi Perusahaan</h2>
+        <p>Perusahaan yang paling sering dimasukkan ke dalam ke-10 opsi itinerary berdasarkan lokasi strategis dan relevansi industri.</p>
+      </div>
+      <div class="chart-block">
+        <div class="chart-wrap">
+          <canvas id="companyChart"></canvas>
+        </div>
+        <div class="insight-pill">
+          <span class="insight-icon">⚡</span>
+          <span><strong>Microsoft Indonesia</strong> muncul sebagai jangkar utama di Day 3, direkomendasikan dalam <strong>6 opsi</strong> berbeda karena lokasinya di SCBD. <strong>Anabatic Technologies</strong> mendominasi Day 2 di area Tangerang dengan <strong>4 kemunculan</strong>.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- GEO DISTRIBUTION -->
+    <section class="fade-in">
+      <div class="section-head">
+        <div class="section-tag">02 — Persebaran Geografis</div>
+        <h2>Distribusi<br>Area Kunjungan</h2>
+        <p>Pemetaan dari 40 total slot kunjungan (4 kunjungan × 10 opsi) berdasarkan zona geografis untuk efisiensi pergerakan bus.</p>
+      </div>
+      <div class="geo-grid">
+        <div class="chart-block" style="margin-bottom:0">
+          <div class="chart-wrap" style="height:300px">
+            <canvas id="geoChart"></canvas>
+          </div>
+        </div>
+        <div class="geo-legend">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ROUTE CARDS -->
+    <section class="fade-in" style="margin-top:40px">
+      <div class="section-head">
+        <div class="section-tag">03 — Paket Itinerary Lengkap</div>
+        <h2>10 Jalur<br>Navigasi Kunjungan</h2>
+        <p>Paket itinerary dirancang agar searah, menghindari kemacetan, dan memiliki benang merah tema industri yang kuat.</p>
+      </div>
+      <div class="routes-grid" id="routesGrid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo">Company<span>Visit</span></div>
+    <div class="footer-tag">// Salatiga → Jakarta & Tangerang — 2025</div>
+    <div class="footer-tag">60–90 Peserta · 2 Bus Besar</div>
+  </footer>
+
+<script>
+// ── DATA ──
+const companies = [
+  { name: "Microsoft Indonesia", count: 6 },
+  { name: "Accenture Indonesia", count: 4 },
+  { name: "PT GoTo Gojek Tokopedia", count: 4 },
+  { name: "Anabatic Technologies", count: 4 },
+  { name: "Apple Developer Academy", count: 3 },
+  { name: "PT Telkom Indonesia", count: 3 },
+  { name: "Oracle Indonesia", count: 3 },
+  { name: "PT Metrodata Electronics", count: 3 },
+  { name: "PT Indosat Tbk", count: 3 },
+  { name: "PT Multipolar Technology", count: 3 },
+  { name: "PT Bank Central Asia", count: 2 },
+  { name: "Bank Permata", count: 1 },
+  { name: "PT Bank Sinar Mas", count: 1 },
+];
+
+const geoData = [
+  { name: "Tangerang (BSD/Serpong)", count: 13, color: "#FF6B35" },
+  { name: "Jakarta Selatan (SCBD/Gatsu)", count: 11, color: "#00D4FF" },
+  { name: "Jakarta Pusat (Gambir/Thamrin)", count: 7, color: "#00F5A0" },
+  { name: "Jakarta CBD (Sudirman)", count: 6, color: "#F7B731" },
+  { name: "Jakarta Barat (Slipi)", count: 3, color: "#FF3CAC" },
+];
+
+const routes = [
+  { n:1, cls:"c1", title:"The Global Tech", day2:"🍏 Apple Academy → 💻 Anabatic", day3:"🪟 Microsoft → 🗄️ Oracle" },
+  { n:2, cls:"c2", title:"Digital Finance Path", day2:"🏦 Bank BCA → ⚙️ Multipolar", day3:"📡 Indosat → 🪟 Microsoft" },
+  { n:3, cls:"c3", title:"Digital & Telco", day2:"📡 Indosat → 🗼 Telkom", day3:"🛵 GoTo → 👔 Accenture" },
+  { n:4, cls:"c4", title:"IT Infrastructure", day2:"🖥️ Metrodata → 💻 Anabatic", day3:"🗄️ Oracle → 🪟 Microsoft" },
+  { n:5, cls:"c5", title:"Diverse Central Loop", day2:"🍏 Apple Academy → 🏦 Bank BCA", day3:"🪟 Microsoft → 👔 Accenture", featured:true, note:"⭐ Rekomendasi Utama — Big Tech · Bank · Global Consulting" },
+  { n:6, cls:"c6", title:"South Powerhouse", day2:"🗼 Telkom → 🛵 GoTo", day3:"👔 Accenture → 🪟 Microsoft" },
+  { n:7, cls:"c7", title:"West to Central", day2:"🖥️ Metrodata → 📡 Indosat", day3:"🏦 Bank Sinar Mas → 🗄️ Oracle" },
+  { n:8, cls:"c8", title:"Emerging Solutions", day2:"⚙️ Multipolar → 💻 Anabatic", day3:"🖥️ Metrodata → 🗼 Telkom" },
+  { n:9, cls:"c9", title:"Corporate Strategic", day2:"🍏 Apple Academy → 💳 Bank Permata", day3:"🛵 GoTo → 👔 Accenture" },
+  { n:10, cls:"c10", title:"The Digital Journey", day2:"💻 Anabatic → ⚙️ Multipolar", day3:"🛵 GoTo → 🪟 Microsoft" },
+];
+
+// ── COMPANY BAR CHART ──
+const ctxCo = document.getElementById('companyChart').getContext('2d');
+new Chart(ctxCo, {
+  type: 'bar',
+  data: {
+    labels: companies.map(c => c.name),
+    datasets: [{
+      data: companies.map(c => c.count),
+      backgroundColor: companies.map((c, i) => {
+        const stops = ['#00D4FF','#00D4FF','#00F5A0','#00F5A0','#F7B731','#F7B731','#FF6B35','#FF6B35','#FF3CAC','#FF3CAC','#A78BFA','#60A5FA','#34D399'];
+        return stops[i] + '99';
+      }),
+      borderColor: companies.map((c, i) => {
+        const stops = ['#00D4FF','#00D4FF','#00F5A0','#00F5A0','#F7B731','#F7B731','#FF6B35','#FF6B35','#FF3CAC','#FF3CAC','#A78BFA','#60A5FA','#34D399'];
+        return stops[i];
+      }),
+      borderWidth: 1,
+      borderRadius: 6,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    maintainAspectRatio: false,
+    animation: { duration: 1200, easing: 'easeOutQuart' },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#0D1420',
+        borderColor: 'rgba(255,255,255,0.1)',
+        borderWidth: 1,
+        titleColor: '#E8EDF5',
+        bodyColor: '#6B7A94',
+        callbacks: {
+          label: ctx => ` Muncul di ${ctx.raw} opsi rute`
+        }
+      }
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        ticks: { stepSize: 1, color: '#6B7A94', font: { family: 'DM Mono', size: 11 } },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        border: { color: 'transparent' }
+      },
+      y: {
+        ticks: { color: '#9BBDD0', font: { family: 'DM Sans', size: 12, weight: '500' } },
+        grid: { display: false },
+        border: { color: 'transparent' }
+      }
+    }
+  }
+});
+
+// ── GEO DOUGHNUT ──
+const ctxGeo = document.getElementById('geoChart').getContext('2d');
+new Chart(ctxGeo, {
+  type: 'doughnut',
+  data: {
+    labels: geoData.map(g => g.name),
+    datasets: [{
+      data: geoData.map(g => g.count),
+      backgroundColor: geoData.map(g => g.color + '55'),
+      borderColor: geoData.map(g => g.color),
+      borderWidth: 2,
+      hoverOffset: 8,
+    }]
+  },
+  options: {
+    maintainAspectRatio: false,
+    cutout: '68%',
+    animation: { duration: 1400, easing: 'easeInOutQuart' },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#0D1420',
+        borderColor: 'rgba(255,255,255,0.1)',
+        borderWidth: 1,
+        titleColor: '#E8EDF5',
+        bodyColor: '#6B7A94',
+        callbacks: {
+          label: ctx => ` ${ctx.raw} slot kunjungan`
+        }
+      }
+    }
+  }
+});
+
+// ── GEO LEGEND ──
+const maxGeo = Math.max(...geoData.map(g => g.count));
+const geoLegendEl = document.querySelector('.geo-legend');
+geoData.forEach(g => {
+  const div = document.createElement('div');
+  div.className = 'geo-item';
+  div.innerHTML = `
+    <div class="geo-dot" style="background:${g.color};box-shadow:0 0 8px ${g.color}55"></div>
+    <div style="flex:1;min-width:0">
+      <div class="geo-item-name">${g.name}</div>
+      <div class="geo-item-count">${g.count} slot kunjungan</div>
+      <div class="geo-bar-wrap" style="margin-top:8px">
+        <div class="geo-bar-fill" style="width:0%;background:${g.color}" data-w="${Math.round(g.count/maxGeo*100)}%"></div>
+      </div>
+    </div>
+  `;
+  geoLegendEl.appendChild(div);
+});
+
+// ── ROUTE CARDS ──
+const grid = document.getElementById('routesGrid');
+routes.forEach(r => {
+  const card = document.createElement('div');
+  card.className = `route-card ${r.cls}${r.featured ? ' featured' : ''}`;
+  card.innerHTML = `
+    ${r.featured ? '<div class="route-badge">⭐ Rekomendasi Utama</div>' : ''}
+    <div class="route-num">Opsi ${r.n.toString().padStart(2,'0')}</div>
+    <div class="route-title">${r.title}</div>
+    <div class="route-day">
+      <div class="day-label">Day 2</div>
+      <div class="day-stops">${renderStops(r.day2)}</div>
+    </div>
+    <div class="route-day">
+      <div class="day-label">Day 3</div>
+      <div class="day-stops">${renderStops(r.day3)}</div>
+    </div>
+    ${r.note ? `<div class="route-note">${r.note}</div>` : ''}
+  `;
+  grid.appendChild(card);
+});
+
+function renderStops(str) {
+  const parts = str.split('→');
+  return parts.map((p, i) =>
+    `<span class="stop-chip">${p.trim()}</span>${i < parts.length-1 ? '<span class="stop-arrow">→</span>' : ''}`
+  ).join('');
+}
+
+// ── SCROLL ANIMATION ──
+const fadeEls = document.querySelectorAll('.fade-in');
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+fadeEls.forEach(el => io.observe(el));
+
+// ── ANIMATE GEO BARS ──
+setTimeout(() => {
+  document.querySelectorAll('.geo-bar-fill').forEach(el => {
+    el.style.width = el.dataset.w;
+  });
+}, 600);
+</script>
+</body>
+</html>
